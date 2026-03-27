@@ -3,8 +3,8 @@ import time
 import random
 import datetime
 
-# Connect securely to the Mongos router (Wait for it on port 27020 based on docker-compose)
-CONNECTION_STRING = "mongodb://localhost:27020/"
+# Connect securely to the Mongos router (Wait for it on port 27022 based on docker-compose)
+CONNECTION_STRING = "mongodb://localhost:27022/"
 
 def insert_random_transaction(collection):
     transaction = {
@@ -48,7 +48,7 @@ if __name__ == "__main__":
             time.sleep(random.uniform(0.5, 2.0))
             
     except pymongo.errors.ServerSelectionTimeoutError:
-        print("CRITICAL DEPLOYMENT ERROR: Cannot reach Mongos router at localhost:27020.")
+        print("CRITICAL DEPLOYMENT ERROR: Cannot reach Mongos router at localhost:27022.")
         print("Is `docker-compose up -d` running? Did you execute `init-cluster.ps1`?")
     except KeyboardInterrupt:
         print(f"\nSimulator stopped safely. Total documents inserted: {transactions_inserted}")
