@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # Config Servers (Replica Set: cfgrs)
+  # ==========================================
+  configsvr1:
+    image: mongo:6.0
+    container_name: configsvr1
+    command: mongod --configsvr --replSet cfgrs --port 27019 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - configsvr1_data:/data/db
+
+  configsvr2:
+    image: mongo:6.0
+    container_name: configsvr2
+    command: mongod --configsvr --replSet cfgrs --port 27019 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - configsvr2_data:/data/db
+
+  configsvr3:
+    image: mongo:6.0
+    container_name: configsvr3
+    command: mongod --configsvr --replSet cfgrs --port 27019 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - configsvr3_data:/data/db
+
+  # ==========================================
+  # Shard 1 (Replica Set: shard1rs)
+  # ==========================================
+  shard1_node1:
+    image: mongo:6.0
+    container_name: shard1_node1
+    command: mongod --shardsvr --replSet shard1rs --port 27018 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - shard1_node1_data:/data/db
+
+  shard1_node2:
+    image: mongo:6.0
+    container_name: shard1_node2
+    command: mongod --shardsvr --replSet shard1rs --port 27018 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - shard1_node2_data:/data/db
+
+  shard1_node3:
+    image: mongo:6.0
+    container_name: shard1_node3
+    command: mongod --shardsvr --replSet shard1rs --port 27018 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - shard1_node3_data:/data/db
+
+  # ==========================================
+  # Shard 2 (Replica Set: shard2rs)
+  # ==========================================
+  shard2_node1:
+    image: mongo:6.0
+    container_name: shard2_node1
+    command: mongod --shardsvr --replSet shard2rs --port 27018 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - shard2_node1_data:/data/db
+
+  shard2_node2:
+    image: mongo:6.0
+    container_name: shard2_node2
+    command: mongod --shardsvr --replSet shard2rs --port 27018 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - shard2_node2_data:/data/db
+
+  shard2_node3:
+    image: mongo:6.0
+    container_name: shard2_node3
+    command: mongod --shardsvr --replSet shard2rs --port 27018 --bind_ip_all
+    networks:
+      - mongo_cluster
+    volumes:
+      - shard2_node3_data:/data/db
+
+  # ==========================================
+  # Mongos (The Query Router)
+  # ==========================================
+  mongos:
+    image: mongo:6.0
+    container_name: mongos
+    command: mongos --configdb cfgrs/configsvr1:27019,configsvr2:27019,configsvr3:27019 --bind_ip_all
+    ports:
+      - "27020:27017" # We connect securely to localhost:27020 from outside
+    networks:
+      - mongo_cluster
+    depends_on:
+      - configsvr1
+      - configsvr2
+      - configsvr3
+
+networks:
+  mongo_cluster:
+    driver: bridge
+
+volumes:
+  configsvr1_data:
+  configsvr2_data:
+  configsvr3_data:
+  shard1_node1_data:
+  shard1_node2_data:
+  shard1_node3_data:
+  shard2_node1_data:
+  shard2_node2_data:
+  shard2_node3_data:
