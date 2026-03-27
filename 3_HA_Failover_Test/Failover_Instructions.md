@@ -5,7 +5,7 @@ One of the primary enterprise benefits of MongoDB Replica Sets is **automatic fa
 ### Step 1: Start the Traffic Simulator
 Run the overarching python simulator in a terminal:
 ```bash
-python "d:\Database Engineer\MongoDB_Master_DR_Suite\2_Traffic_Simulator\Traffic_Simulator.py"
+python "d:\Traffic_Simulator.py"
 ```
 You will see live data continuously streaming into the cluster.
 
